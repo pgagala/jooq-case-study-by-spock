@@ -19,6 +19,7 @@ class JooqSpec extends Specification {
     @Shared
     Sql sql
 
+    @AutoCleanup
     @Shared
     Connection connection = DriverManager.getConnection('jdbc:h2:./test_db;AUTO_SERVER=TRUE;', 'sa', '')
 
