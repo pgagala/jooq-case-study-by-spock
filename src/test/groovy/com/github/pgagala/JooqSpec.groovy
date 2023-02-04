@@ -31,7 +31,7 @@ class JooqSpec extends Specification {
         dlsContext = DSL.using(connection)
     }
 
-    void cleanup() {
+    void setup() {
         sql.execute('DELETE FROM test_schema.foo')
     }
 
