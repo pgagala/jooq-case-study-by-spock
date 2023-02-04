@@ -1,0 +1,9 @@
+CREATE SCHEMA IF NOT EXISTS test_schema;
+
+CREATE TABLE IF NOT EXISTS test_schema.foo
+(
+    SOME_NUMBER
+    INT,
+    SOME_STRING
+    VARCHAR
+);

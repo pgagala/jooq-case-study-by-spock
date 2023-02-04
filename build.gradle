@@ -1,0 +1,70 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'io.freefair.lombok' version '6.6'
+    id 'nu.studer.jooq' version '8.1'
+}
+
+group 'com.github.pgagala'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = "19.PREVIEW"
+    targetCompatibility = "19.PREVIEW"
+}
+
+dependencies {
+    jooqGenerator 'com.h2database:h2:2.1.214'
+    testImplementation 'org.codehaus.groovy:groovy-all:3.0.14'
+    testImplementation "org.spockframework:spock-core:2.3-groovy-3.0"
+    testImplementation group: 'com.h2database', name: 'h2', version: '2.1.214'
+}
+
+jooq {
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.INFO
+                jdbc {
+                    driver = 'org.h2.Driver'
+                    url = 'jdbc:h2:./test_db;AUTO_SERVER=TRUE;INIT=runscript from \'./src/test/resources/init.sql\''
+                    user = 'sa'
+                    password = ''
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    strategy {
+                        name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                    }
+                    database {
+                        name = 'org.jooq.meta.h2.H2Database'
+                        includes = '.*'
+                        excludes = ''
+                    }
+                    generate {
+                        javaTimeTypes = true
+                    }
+                    target {
+                        packageName = 'com.github.pgagala'
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks.withType(JavaCompile).each {
+    it.options.compilerArgs.add('--enable-preview')
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+    jvmArgs(['--enable-preview'])
+}
